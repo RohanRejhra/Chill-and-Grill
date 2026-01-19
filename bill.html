@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bill - Grill & Chill</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="project1.1.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="left-nav">
+        <a href="project1.1.html" class="main-btn">🏠 Back to Menu</a>
+    </div>
+    <div class="brand-circle">
+        <img src="chill_and_Grill_logo.png" alt="Grill & Chill Logo">
+    </div>
+    <div style="width: 100px;"></div>
+</nav>
+<div class="bill-container">
+    <div class="bill-header">
+        <h1>Your Bill</h1>
+        <p>Review your order and complete checkout</p>
+    </div>
+    <div class="bill-content">
+        <div id="bill-details">
+          
+        </div>
+        <div class="empty-cart" id="empty-cart">
+            <h2>Your cart is empty</h2>
+            <p>Add items from the menu first!</p>
+            <a href="project1.1.html" class="back-btn">Back to Menu</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const billDetails = document.getElementById('bill-details');
+    const emptyCart = document.getElementById('empty-cart');
+    
+    function displayBill() {
+        if (cart.length === 0) {
+            emptyCart.style.display = 'block';
+            billDetails.style.display = 'none';
+            return;
+        }
+        emptyCart.style.display = 'none';
+        billDetails.style.display = 'block';
+        let subtotal = 0;
+        let itemsHTML = '';
+        cart.forEach(item => {
+            subtotal += item.price;
+            itemsHTML += `
+                <div class="bill-item">
+                    <span>${item.name}</span>
+                    <span>Rs ${item.price}</span>
+                </div>
+            `;
+        });
+        const tax = subtotal * 0.10;
+        const total = subtotal + tax;
+        billDetails.innerHTML = `
+            <div class="bill-summary">
+                <h3>Order Summary</h3>
+                ${itemsHTML}
+                <div class="bill-total">
+                    <p>Subtotal: <span>Rs ${subtotal}</span></p>
+                    <p>Tax (10%): <span>Rs ${tax.toFixed(0)}</span></p>
+                    <p><strong>Total: <span>Rs ${total.toFixed(0)}</span></strong></p>
+                </div>
+            </div>
+            <div class="customer-form">
+                <h3>Customer Information</h3>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="customerName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="customerPhone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="customerAddress" rows="3" placeholder="Enter your complete address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="paymentMethod">
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                    </select>
+                </div>
+                <button class="confirm-btn" onclick="placeOrder()"> Confirm Order</button>
+            </div>
+        `;
+    }
+    function placeOrder() {
+        const name = document.getElementById('customerName').value;
+        const phone = document.getElementById('customerPhone').value;
+        const address = document.getElementById('customerAddress').value;
+        
+        if (!name || !phone || !address) {
+            alert("Please fill in all details!");
+            return;
+        }
+        const orderNumber = Math.floor(Math.random() * 10000);
+        alert(` Order Confirmed!\n\nOrder #${orderNumber}\nName: ${name}\nPhone: ${phone}\n\nThank you for ordering from Grill & Chill!`);
+
+        localStorage.removeItem('cart');
+        window.location.href = "project1.1.html";
+    }
+    
+    displayBill();
+</script>
+
+</body>
+</html>
